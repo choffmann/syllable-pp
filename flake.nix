@@ -25,10 +25,9 @@
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             nodejs_22
-            yarn
+            pnpm
             eslint
             prettierd
-            yo
           ];
 
           shellHook = ''
