@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VERSION: develop
+    ports:
+      - "8080:80"

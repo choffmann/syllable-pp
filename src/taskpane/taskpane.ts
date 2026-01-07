@@ -26,6 +26,8 @@ let isInitialized = false;
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.PowerPoint) {
     document.getElementById("sideload-msg")!.style.display = "none";
+    const version = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "develop";
+    document.getElementById("app-version")!.textContent = version;
 
     setupLicenseListeners();
 
