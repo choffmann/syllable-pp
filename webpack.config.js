@@ -67,6 +67,7 @@ module.exports = async (env, options) => {
       new webpack.DefinePlugin({
         __APP_VERSION__: JSON.stringify(process.env.VERSION || "develop"),
         __BUILD_TIME__: JSON.stringify(process.env.BUILD_TIME || new Date().toISOString().slice(0, 10).replace(/-/g, "")),
+        __LICENSE_SALT__: JSON.stringify(process.env.LICENSE_SALT || ""),
       }),
       new HtmlWebpackPlugin({
         filename: "taskpane.html",

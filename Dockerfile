@@ -18,9 +18,10 @@ COPY . .
 # Build args
 ARG VERSION=develop
 ARG BUILD_TIME
+ARG LICENSE_SALT
 
-# Build with version and build time
-RUN VERSION=${VERSION} BUILD_TIME=${BUILD_TIME:-$(date +%Y%m%d)} pnpm run build
+# Build with version, build time and license salt
+RUN VERSION=${VERSION} BUILD_TIME=${BUILD_TIME:-$(date +%Y%m%d)} LICENSE_SALT=${LICENSE_SALT} pnpm run build
 
 # Production stage
 FROM nginx:alpine

@@ -1,6 +1,6 @@
 const LICENSE_STORAGE_KEY = "syllable-pp-license";
 const TRIAL_USAGE_KEY = "syllable-pp-trial-usage";
-const SECRET_SALT = "SiLb3nTr3worng2025!"; // Keep this secret
+const SECRET_SALT = typeof __LICENSE_SALT__ !== "undefined" ? __LICENSE_SALT__ : "dev-salt";
 
 export const TRIAL_LIMIT = 10;
 
