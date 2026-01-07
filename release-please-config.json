@@ -10,6 +10,10 @@
     {
       "type": "generic",
       "path": "manifest.xml"
+    },
+    {
+      "type": "generic",
+      "path": "installer/syllab.iss"
     }
   ],
   "packages": {
