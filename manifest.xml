@@ -2,15 +2,15 @@
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>01c71763-4c08-4195-9581-18c398267ef1</Id>
   <Version>0.1.0</Version> <!-- x-release-please-version -->
-  <ProviderName>Silbentrennung</ProviderName>
+  <ProviderName>Cedrik Hoffmann</ProviderName>
   <DefaultLocale>de-DE</DefaultLocale>
   <DisplayName DefaultValue="Silbentrennung"/>
   <Description DefaultValue="Silbentrennung mit farblicher Markierung für PowerPoint"/>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+  <SupportUrl DefaultValue="https://github.com/choffmann/syllable-pp/issues"/>
   <AppDomains>
-    <AppDomain>https://www.contoso.com</AppDomain>
+    <AppDomain>https://choffmann.github.io</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Presentation"/>
