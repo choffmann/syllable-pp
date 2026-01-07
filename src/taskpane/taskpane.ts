@@ -14,7 +14,9 @@ import {
   checkLicenseStatus,
   validateLicense,
   saveLicense,
-  formatLicenseKey,
+  incrementTrialUsage,
+  getTrialRemaining,
+  TRIAL_LIMIT,
 } from "../services/license";
 
 let currentWordSyllables: Syllable[][] = [];
@@ -28,8 +30,8 @@ Office.onReady(async (info) => {
     setupLicenseListeners();
 
     const licenseStatus = checkLicenseStatus();
-    if (licenseStatus.isValid) {
-      showApp();
+    if (licenseStatus.isValid || !licenseStatus.isTrialExpired) {
+      showApp(licenseStatus.isValid);
     } else {
       showLicenseScreen();
     }
@@ -41,13 +43,14 @@ function showLicenseScreen(): void {
   document.getElementById("app-body")!.style.display = "none";
 }
 
-function showApp(): void {
+function showApp(isLicensed: boolean): void {
   document.getElementById("license-section")!.style.display = "none";
   document.getElementById("app-body")!.style.display = "block";
 
   setupEventListeners();
   loadSavedSettings();
   renderCorrectionsList();
+  updateTrialBanner(isLicensed);
 
   showStatus("Initialisiere Silbentrennung...", "info");
   initHyphenopoly()
@@ -61,10 +64,31 @@ function showApp(): void {
     });
 }
 
+function updateTrialBanner(isLicensed: boolean): void {
+  const banner = document.getElementById("trial-banner")!;
+  const remainingEl = document.getElementById("trial-remaining")!;
+
+  if (isLicensed) {
+    banner.style.display = "none";
+    return;
+  }
+
+  const remaining = getTrialRemaining();
+  banner.style.display = "flex";
+  remainingEl.textContent = String(remaining);
+
+  if (remaining <= 3) {
+    banner.classList.add("expired");
+  } else {
+    banner.classList.remove("expired");
+  }
+}
+
 function setupLicenseListeners(): void {
   const licenseInput = document.getElementById("license-input") as HTMLInputElement;
   const btnActivate = document.getElementById("btn-activate") as HTMLButtonElement;
   const licenseError = document.getElementById("license-error") as HTMLElement;
+  const btnEnterLicense = document.getElementById("btn-enter-license") as HTMLButtonElement;
 
   licenseInput?.addEventListener("input", () => {
     licenseError.style.display = "none";
@@ -86,7 +110,7 @@ function setupLicenseListeners(): void {
 
     if (validateLicense(key)) {
       saveLicense(key);
-      showApp();
+      showApp(true);
     } else {
       licenseError.style.display = "block";
       licenseInput.classList.add("invalid");
@@ -97,6 +121,10 @@ function setupLicenseListeners(): void {
     if (e.key === "Enter") {
       btnActivate?.click();
     }
+  });
+
+  btnEnterLicense?.addEventListener("click", () => {
+    showLicenseScreen();
   });
 }
 
@@ -180,6 +208,14 @@ async function handleApply(): Promise<void> {
     return;
   }
 
+  const licenseStatus = checkLicenseStatus();
+
+  // Check if trial expired (and not licensed)
+  if (!licenseStatus.isValid && licenseStatus.isTrialExpired) {
+    showLicenseScreen();
+    return;
+  }
+
   const btnApply = document.getElementById("btn-apply") as HTMLButtonElement;
   btnApply.disabled = true;
 
@@ -191,8 +227,22 @@ async function handleApply(): Promise<void> {
     const success = await applySyllableColors(currentWordSyllables, colors);
 
     if (success) {
-      showStatus("Silbenfarben erfolgreich angewendet!", "success");
-      setTimeout(hideStatus, 2000);
+      // Increment trial usage if not licensed
+      if (!licenseStatus.isValid) {
+        incrementTrialUsage();
+        updateTrialBanner(false);
+
+        // Check if trial just expired
+        if (getTrialRemaining() === 0) {
+          showStatus("Testversion abgelaufen! Bitte Lizenz eingeben.", "error");
+        } else {
+          showStatus("Silbenfarben erfolgreich angewendet!", "success");
+          setTimeout(hideStatus, 2000);
+        }
+      } else {
+        showStatus("Silbenfarben erfolgreich angewendet!", "success");
+        setTimeout(hideStatus, 2000);
+      }
     } else {
       showStatus("Fehler beim Anwenden der Farben", "error");
     }

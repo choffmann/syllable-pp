@@ -1,9 +1,14 @@
 const LICENSE_STORAGE_KEY = "syllable-pp-license";
+const TRIAL_USAGE_KEY = "syllable-pp-trial-usage";
 const SECRET_SALT = "SiLb3nTr3worng2025!"; // Keep this secret
+
+export const TRIAL_LIMIT = 10;
 
 export interface LicenseStatus {
   isValid: boolean;
   licenseKey: string | null;
+  trialRemaining: number;
+  isTrialExpired: boolean;
 }
 
 function hashCode(str: string): number {
@@ -65,13 +70,49 @@ export function removeLicense(): void {
   localStorage.removeItem(LICENSE_STORAGE_KEY);
 }
 
+export function getTrialUsage(): number {
+  const usage = localStorage.getItem(TRIAL_USAGE_KEY);
+  return usage ? parseInt(usage, 10) : 0;
+}
+
+export function incrementTrialUsage(): number {
+  const current = getTrialUsage();
+  const newCount = current + 1;
+  localStorage.setItem(TRIAL_USAGE_KEY, String(newCount));
+  return newCount;
+}
+
+export function getTrialRemaining(): number {
+  return Math.max(0, TRIAL_LIMIT - getTrialUsage());
+}
+
+export function isTrialExpired(): boolean {
+  return getTrialUsage() >= TRIAL_LIMIT;
+}
+
 export function checkLicenseStatus(): LicenseStatus {
   const savedKey = getSavedLicense();
-  if (!savedKey) {
-    return { isValid: false, licenseKey: null };
+  const trialRemaining = getTrialRemaining();
+  const trialExpired = isTrialExpired();
+
+  if (savedKey && validateLicense(savedKey)) {
+    return {
+      isValid: true,
+      licenseKey: savedKey,
+      trialRemaining,
+      isTrialExpired: false,
+    };
   }
+
   return {
-    isValid: validateLicense(savedKey),
-    licenseKey: savedKey,
+    isValid: false,
+    licenseKey: null,
+    trialRemaining,
+    isTrialExpired: trialExpired,
   };
+}
+
+export function canUseApp(): boolean {
+  const status = checkLicenseStatus();
+  return status.isValid || !status.isTrialExpired;
 }
