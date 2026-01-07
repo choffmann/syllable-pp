@@ -1,6 +1,6 @@
 {
   "name": "syllable-pp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "PowerPoint Add-in for syllable separation with colored formatting",
   "license": "MIT",
   "config": {

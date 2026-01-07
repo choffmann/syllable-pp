@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/choffmann/syllable-pp/compare/v0.1.0...v0.1.1) (2026-01-07)
+
+
+### Bug Fixes
+
+* use git tag for version in manual deployments ([bb6d924](https://github.com/choffmann/syllable-pp/commit/bb6d9242bfda1f6fd7fbdf58c6a901cab3ea9d0d))
+
 ## [0.1.0](https://github.com/choffmann/syllable-pp/compare/v0.1.0...v0.1.0) (2026-01-07)
 
 
