@@ -164,8 +164,8 @@ function handleColorChange(): void {
 }
 
 function getColors(): string[] {
-  const color1 = (document.getElementById("color1") as HTMLInputElement)?.value || "#E53935";
-  const color2 = (document.getElementById("color2") as HTMLInputElement)?.value || "#1E88E5";
+  const color1 = (document.getElementById("color1") as HTMLInputElement)?.value || "#1E88E5";
+  const color2 = (document.getElementById("color2") as HTMLInputElement)?.value || "#E53935";
   return [color1, color2];
 }
 
@@ -284,6 +284,10 @@ function handleSaveCorrection(): void {
   }
 }
 
+function isLetterSyllable(text: string): boolean {
+  return /\p{L}/u.test(text);
+}
+
 function renderPreview(wordSyllables: Syllable[][], colors: string[]): void {
   const container = document.getElementById("preview-container")!;
   container.innerHTML = "";
@@ -299,10 +303,14 @@ function renderPreview(wordSyllables: Syllable[][], colors: string[]): void {
 
       if (/^\s+$/.test(syllable.text)) {
         span.textContent = syllable.text;
-      } else {
+      } else if (isLetterSyllable(syllable.text)) {
         span.textContent = syllable.text;
         span.style.color = colors[colorIndex % colors.length];
         colorIndex++;
+      } else {
+        // Non-letter syllables (numbers, punctuation) always use color 1
+        span.textContent = syllable.text;
+        span.style.color = colors[0];
       }
 
       wordSpan.appendChild(span);

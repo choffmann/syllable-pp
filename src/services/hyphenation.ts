@@ -71,17 +71,50 @@ export function parseToSyllables(hyphenatedText: string): Syllable[] {
 }
 
 export async function hyphenateWord(word: string): Promise<Syllable[]> {
-  const correction = getCorrection(word);
-  if (correction) {
-    return correction.correctedSyllables.map((text, index, arr) => ({
-      text,
-      startIndex: arr.slice(0, index).reduce((sum, s) => sum + s.length, 0),
-    }));
+  // Extract leading and trailing non-letter characters
+  const leadingMatch = word.match(/^[^\p{L}]+/u);
+  const trailingMatch = word.match(/[^\p{L}]+$/u);
+  const leading = leadingMatch ? leadingMatch[0] : "";
+  const trailing = trailingMatch ? trailingMatch[0] : "";
+  const coreWord = word.slice(leading.length, word.length - (trailing.length || 0));
+
+  const result: Syllable[] = [];
+  let currentIndex = 0;
+
+  // Add leading non-letters as separate syllable
+  if (leading) {
+    result.push({ text: leading, startIndex: currentIndex });
+    currentIndex += leading.length;
   }
 
-  const hyphenator = await initHyphenopoly();
-  const hyphenated = hyphenator(word);
-  return parseToSyllables(hyphenated);
+  if (coreWord) {
+    const correction = getCorrection(coreWord);
+    let syllables: Syllable[];
+
+    if (correction) {
+      syllables = correction.correctedSyllables.map((text) => ({
+        text,
+        startIndex: currentIndex,
+      }));
+    } else {
+      const hyphenator = await initHyphenopoly();
+      const hyphenated = hyphenator(coreWord);
+      syllables = parseToSyllables(hyphenated);
+    }
+
+    // Update indices and add to result
+    for (const syllable of syllables) {
+      result.push({ text: syllable.text, startIndex: currentIndex });
+      currentIndex += syllable.text.length;
+    }
+  }
+
+  // Add trailing non-letters as separate syllable
+  if (trailing) {
+    result.push({ text: trailing, startIndex: currentIndex });
+  }
+
+  return result.length > 0 ? result : [{ text: word, startIndex: 0 }];
 }
 
 export async function hyphenateText(text: string): Promise<Syllable[][]> {

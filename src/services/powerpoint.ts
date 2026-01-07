@@ -4,6 +4,10 @@ export interface TextSelection {
   text: string;
 }
 
+function isLetterSyllable(text: string): boolean {
+  return /\p{L}/u.test(text);
+}
+
 export async function getSelectedText(): Promise<TextSelection | null> {
   return new Promise((resolve) => {
     Office.context.document.getSelectedDataAsync(
@@ -49,11 +53,18 @@ export async function applySyllableColors(
               continue;
             }
 
-            const color = colors[colorIndex % colors.length];
+            let color: string;
+            if (isLetterSyllable(syllable.text)) {
+              color = colors[colorIndex % colors.length];
+              colorIndex++;
+            } else {
+              // Non-letter syllables always use color 1
+              color = colors[0];
+            }
+
             const subRange = textRange.getSubstring(position, syllable.text.length);
             subRange.font.color = color;
             position += syllable.text.length;
-            colorIndex++;
           }
         }
 

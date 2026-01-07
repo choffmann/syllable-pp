@@ -25,6 +25,6 @@ export interface UserSettings {
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
-  colors: ["#E53935", "#1E88E5"],
+  colors: ["#1E88E5", "#E53935"],
   language: "de-x-syllable",
 };
