@@ -34,6 +34,30 @@
       </p>
     </section>
 
+    <!-- License Activation -->
+    <section id="license-section" class="section license-section" style="display: none">
+      <div class="license-container">
+        <h1 class="ms-font-xl">Silbentrennung</h1>
+        <p class="ms-font-m">Bitte gib deinen Lizenzschlüssel ein:</p>
+        <input
+          type="text"
+          id="license-input"
+          class="license-input ms-font-m"
+          placeholder="XXXX-XXXX-XXXX-XXXX"
+          maxlength="19"
+        />
+        <button id="btn-activate" class="ms-Button ms-Button--primary">
+          <span class="ms-Button-label">Aktivieren</span>
+        </button>
+        <p id="license-error" class="license-error ms-font-s" style="display: none">
+          Ungültiger Lizenzschlüssel
+        </p>
+        <p class="ms-font-xs license-hint">
+          Den Lizenzschlüssel findest du in deinem Kaufbeleg.
+        </p>
+      </div>
+    </section>
+
     <main id="app-body" class="main" style="display: none">
       <!-- Color Settings -->
       <section class="section">

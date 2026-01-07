@@ -10,6 +10,12 @@ import {
   loadSettings,
   saveSettings,
 } from "../services/storage";
+import {
+  checkLicenseStatus,
+  validateLicense,
+  saveLicense,
+  formatLicenseKey,
+} from "../services/license";
 
 let currentWordSyllables: Syllable[][] = [];
 let currentText = "";
@@ -18,23 +24,81 @@ let isInitialized = false;
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.PowerPoint) {
     document.getElementById("sideload-msg")!.style.display = "none";
-    document.getElementById("app-body")!.style.display = "block";
 
-    setupEventListeners();
-    loadSavedSettings();
-    renderCorrectionsList();
+    setupLicenseListeners();
 
-    showStatus("Initialisiere Silbentrennung...", "info");
-    try {
-      await initHyphenopoly();
-      isInitialized = true;
-      hideStatus();
-    } catch (error) {
-      showStatus("Fehler beim Laden der Silbentrennung", "error");
-      console.error("Failed to initialize Hyphenopoly:", error);
+    const licenseStatus = checkLicenseStatus();
+    if (licenseStatus.isValid) {
+      showApp();
+    } else {
+      showLicenseScreen();
     }
   }
 });
+
+function showLicenseScreen(): void {
+  document.getElementById("license-section")!.style.display = "flex";
+  document.getElementById("app-body")!.style.display = "none";
+}
+
+function showApp(): void {
+  document.getElementById("license-section")!.style.display = "none";
+  document.getElementById("app-body")!.style.display = "block";
+
+  setupEventListeners();
+  loadSavedSettings();
+  renderCorrectionsList();
+
+  showStatus("Initialisiere Silbentrennung...", "info");
+  initHyphenopoly()
+    .then(() => {
+      isInitialized = true;
+      hideStatus();
+    })
+    .catch((error) => {
+      showStatus("Fehler beim Laden der Silbentrennung", "error");
+      console.error("Failed to initialize Hyphenopoly:", error);
+    });
+}
+
+function setupLicenseListeners(): void {
+  const licenseInput = document.getElementById("license-input") as HTMLInputElement;
+  const btnActivate = document.getElementById("btn-activate") as HTMLButtonElement;
+  const licenseError = document.getElementById("license-error") as HTMLElement;
+
+  licenseInput?.addEventListener("input", () => {
+    licenseError.style.display = "none";
+    licenseInput.classList.remove("invalid");
+
+    // Auto-format with dashes
+    let value = licenseInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (value.length > 16) value = value.slice(0, 16);
+
+    const parts = [];
+    for (let i = 0; i < value.length; i += 4) {
+      parts.push(value.slice(i, i + 4));
+    }
+    licenseInput.value = parts.join("-");
+  });
+
+  btnActivate?.addEventListener("click", () => {
+    const key = licenseInput.value;
+
+    if (validateLicense(key)) {
+      saveLicense(key);
+      showApp();
+    } else {
+      licenseError.style.display = "block";
+      licenseInput.classList.add("invalid");
+    }
+  });
+
+  licenseInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      btnActivate?.click();
+    }
+  });
+}
 
 function setupEventListeners(): void {
   document.getElementById("btn-preview")?.addEventListener("click", handlePreview);
