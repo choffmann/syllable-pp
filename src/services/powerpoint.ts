@@ -29,6 +29,40 @@ export async function getSelectedText(): Promise<TextSelection | null> {
   });
 }
 
+async function getTextRangeToModify(
+  context: PowerPoint.RequestContext
+): Promise<PowerPoint.TextRange | null> {
+  // First try: get selected shapes and use their text frame
+  try {
+    const shapes = context.presentation.getSelectedShapes();
+    shapes.load("items/textFrame/textRange/text");
+    await context.sync();
+
+    if (shapes.items.length > 0) {
+      const textRange = shapes.items[0].textFrame.textRange;
+      if (textRange.text) {
+        return textRange;
+      }
+    }
+  } catch (e) {
+    console.log("Shape approach failed:", e);
+  }
+
+  // Second try: get selected text range directly
+  try {
+    const selectedTextRange = context.presentation.getSelectedTextRange();
+    selectedTextRange.load("text");
+    await context.sync();
+    if (selectedTextRange.text) {
+      return selectedTextRange;
+    }
+  } catch (e) {
+    console.log("TextRange approach failed:", e);
+  }
+
+  return null;
+}
+
 export async function applySyllableColors(
   wordSyllables: Syllable[][],
   colors: string[]
@@ -36,14 +70,15 @@ export async function applySyllableColors(
   return new Promise((resolve) => {
     PowerPoint.run(async (context) => {
       try {
-        const textRange = context.presentation.getSelectedTextRange();
-        textRange.load("text");
-        await context.sync();
+        const textRange = await getTextRangeToModify(context);
 
-        const newText = wordSyllables.flat().map((s) => s.text).join("");
-        textRange.text = newText;
-        await context.sync();
+        if (!textRange) {
+          console.error("No text or shape selected");
+          resolve(false);
+          return;
+        }
 
+        // Only apply colors, don't modify text to preserve formatting
         let position = 0;
         for (const word of wordSyllables) {
           let colorIndex = 0;
