@@ -48,9 +48,6 @@ Root: HKCU; Subkey: "Software\Microsoft\Office\15.0\WEF\TrustedCatalogs\{#MyAppG
 Root: HKCU; Subkey: "Software\Microsoft\Office\15.0\WEF\TrustedCatalogs\{#MyAppGUID}"; ValueType: string; ValueName: "Url"; ValueData: "\\localhost\Syllab"; Flags: uninsdeletekey createvalueifdoesntexist
 Root: HKCU; Subkey: "Software\Microsoft\Office\15.0\WEF\TrustedCatalogs\{#MyAppGUID}"; ValueType: dword; ValueName: "Flags"; ValueData: "1"; Flags: uninsdeletekey createvalueifdoesntexist
 
-; Store license key if provided
-Root: HKCU; Subkey: "Software\{#MyAppName}"; ValueType: string; ValueName: "LicenseKey"; ValueData: "{code:GetLicenseKey}"; Flags: uninsdeletekey; Check: HasLicenseKey
-
 [Run]
 ; Create network share for the installation folder
 Filename: "net.exe"; Parameters: "share Syllab=""{app}"" /grant:everyone,READ"; Flags: runhidden waituntilterminated; StatusMsg: "Erstelle Netzwerkfreigabe..."
@@ -60,71 +57,22 @@ Filename: "net.exe"; Parameters: "share Syllab=""{app}"" /grant:everyone,READ"; 
 Filename: "net.exe"; Parameters: "share Syllab /delete /yes"; Flags: runhidden waituntilterminated; RunOnceId: "RemoveShare"
 
 [Code]
-var
-  LicensePage: TInputQueryWizardPage;
-  LicenseKey: String;
-
-procedure InitializeWizard;
-begin
-  // Create license key input page
-  LicensePage := CreateInputQueryPage(wpLicense,
-    'Lizenzschlüssel (Optional)',
-    'Geben Sie Ihren Lizenzschlüssel ein oder lassen Sie das Feld leer für den Testmodus.',
-    'Im Testmodus können Sie das Add-In 10 mal kostenlos verwenden.' + #13#10 + #13#10 +
-    'Wenn Sie einen Lizenzschlüssel haben, geben Sie ihn hier ein:');
-  LicensePage.Add('Lizenzschlüssel:', False);
-  LicensePage.Values[0] := '';
-end;
-
-function GetLicenseKey(Param: String): String;
-begin
-  Result := LicensePage.Values[0];
-end;
-
-function HasLicenseKey: Boolean;
-begin
-  Result := Trim(LicensePage.Values[0]) <> '';
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  if CurStep = ssPostInstall then
-  begin
-    LicenseKey := Trim(LicensePage.Values[0]);
-
-    if LicenseKey <> '' then
-    begin
-      // Save license key to a text file for easy copy
-      SaveStringToFile(ExpandConstant('{app}\lizenzschluessel.txt'),
-        'Ihr Lizenzschlüssel: ' + LicenseKey + #13#10 + #13#10 +
-        'Kopieren Sie diesen Schlüssel und fügen Sie ihn im Add-In ein.' + #13#10,
-        False);
-    end;
-  end;
-end;
-
 procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpFinished then
   begin
     WizardForm.FinishedLabel.Caption :=
-      'Syllab wurde erfolgreich installiert!' + #13#10 + #13#10 +
+      'Syllab wurde erfolgreich als Testversion installiert!' + #13#10 + #13#10 +
+      'Die Testversion kann 10 mal kostenlos verwendet werden.' + #13#10 +
+      'Einen Lizenzschlüssel können Sie direkt im Add-In eingeben.' + #13#10 + #13#10 +
       'Nächste Schritte:' + #13#10 +
       '1. Starten Sie PowerPoint (falls offen, bitte neu starten)' + #13#10 +
-      '2. Gehen Sie zu: Start → Add-Ins' + #13#10 +
-      '3. Klicken Sie auf "Meine Add-Ins" → "Freigegebener Ordner"' + #13#10 +
+      '2. Gehen Sie zu: Start > Add-Ins' + #13#10 +
+      '3. Klicken Sie auf "Meine Add-Ins" > "Freigegebener Ordner"' + #13#10 +
       '4. Wählen Sie "Syllab" aus';
-
-    if HasLicenseKey then
-    begin
-      WizardForm.FinishedLabel.Caption := WizardForm.FinishedLabel.Caption + #13#10 + #13#10 +
-        'Ihr Lizenzschlüssel wurde in einer Textdatei gespeichert:' + #13#10 +
-        ExpandConstant('{app}\lizenzschluessel.txt');
-    end;
   end;
 end;
 
-// Check if PowerPoint is running and warn user
 function InitializeSetup: Boolean;
 begin
   Result := True;
