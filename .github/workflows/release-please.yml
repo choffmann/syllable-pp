@@ -45,17 +45,22 @@ jobs:
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: "24"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Add-in
-        run: npm run build
+        run: pnpm run build
 
       - name: Build Installer
         run: |
@@ -66,3 +71,52 @@ jobs:
         with:
           tag_name: ${{ needs.release-please.outputs.tag_name }}
           files: installer/output/Syllab-Setup-*.exe
+
+  deploy:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+        env:
+          VERSION: ${{ needs.release-please.outputs.tag_name }}
+          BUILD_TIME: ${{ github.run_number }}
+          LICENSE_SALT: ${{ secrets.LICENSE_SALT }}
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./dist"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
