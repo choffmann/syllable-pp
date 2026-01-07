@@ -1,0 +1,32 @@
+SYLLAB ADD-IN
+Nutzungsbedingungen
+
+Copyright (c) 2026 Cedrik Hoffmann
+Alle Rechte vorbehalten.
+
+LIZENZVEREINBARUNG
+
+Durch die Installation dieser Software erklären Sie sich mit den folgenden
+Bedingungen einverstanden:
+
+1. NUTZUNGSRECHTE
+   - Mit einem gültigen Lizenzschlüssel erhalten Sie das Recht, diese Software
+     auf einem Computer zu nutzen.
+   - Ohne Lizenzschlüssel können Sie die Software im Testmodus verwenden.
+     Der Testmodus ist auf 10 Anwendungen beschränkt.
+
+2. EINSCHRÄNKUNGEN
+   - Die Software darf nicht weitergegeben, verkauft oder anderweitig
+     verbreitet werden.
+   - Der Lizenzschlüssel ist persönlich und nicht übertragbar.
+
+3. HAFTUNGSAUSSCHLUSS
+   DIE SOFTWARE WIRD "WIE BESEHEN" OHNE JEGLICHE GEWÄHRLEISTUNG BEREITGESTELLT.
+   DER AUTOR HAFTET NICHT FÜR SCHÄDEN, DIE DURCH DIE NUTZUNG DER SOFTWARE
+   ENTSTEHEN KÖNNEN.
+
+4. SUPPORT
+   Bei Fragen oder Problemen wenden Sie sich an:
+   https://github.com/choffmann/syllable-pp/issues
+
+Mit der Installation akzeptieren Sie diese Bedingungen.

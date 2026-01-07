@@ -57,14 +57,14 @@ function showApp(isLicensed: boolean): void {
   renderCorrectionsList();
   updateTrialBanner(isLicensed);
 
-  showStatus("Initialisiere Silbentrennung...", "info");
+  showStatus("Initialisiere Syllab...", "info");
   initHyphenopoly()
     .then(() => {
       isInitialized = true;
       hideStatus();
     })
     .catch((error) => {
-      showStatus("Fehler beim Laden der Silbentrennung", "error");
+      showStatus("Fehler beim Laden von Syllab", "error");
       console.error("Failed to initialize Hyphenopoly:", error);
     });
 }
@@ -171,7 +171,7 @@ function getColors(): string[] {
 
 async function handlePreview(): Promise<void> {
   if (!isInitialized) {
-    showStatus("Silbentrennung wird noch geladen...", "info");
+    showStatus("Syllab wird noch geladen...", "info");
     return;
   }
 
@@ -200,7 +200,7 @@ async function handlePreview(): Promise<void> {
 
     hideStatus();
   } catch (error) {
-    showStatus("Fehler bei der Silbentrennung", "error");
+    showStatus("Fehler bei der Silbenanalyse", "error");
     console.error("Preview error:", error);
   }
 

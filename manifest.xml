@@ -4,8 +4,8 @@
   <Version>0.1.0</Version> <!-- x-release-please-version -->
   <ProviderName>Cedrik Hoffmann</ProviderName>
   <DefaultLocale>de-DE</DefaultLocale>
-  <DisplayName DefaultValue="Silbentrennung"/>
-  <Description DefaultValue="Silbentrennung mit farblicher Markierung für PowerPoint"/>
+  <DisplayName DefaultValue="Syllab"/>
+  <Description DefaultValue="Syllab - Silbentrennung mit farblicher Markierung für PowerPoint"/>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://github.com/choffmann/syllable-pp/issues"/>
@@ -72,13 +72,13 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Silbentrennung Add-in"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Silbentrennung"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Silbentrennung"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Syllab Add-in"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Syllab"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Syllab"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Silbentrennung Add-in geladen. Gehe zum START-Tab und klicke auf 'Silbentrennung' um zu beginnen."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Öffnet das Silbentrennung-Panel"/>
+        <bt:String id="GetStarted.Description" DefaultValue="Syllab Add-in geladen. Gehe zum START-Tab und klicke auf 'Syllab' um zu beginnen."/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Öffnet das Syllab-Panel"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
