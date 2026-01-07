@@ -15,11 +15,12 @@ RUN pnpm install --frozen-lockfile
 # Copy source
 COPY . .
 
-# Build arg for version
+# Build args
 ARG VERSION=develop
+ARG BUILD_TIME
 
-# Build with version
-RUN VERSION=${VERSION} pnpm run build
+# Build with version and build time
+RUN VERSION=${VERSION} BUILD_TIME=${BUILD_TIME:-$(date +%Y%m%d)} pnpm run build
 
 # Production stage
 FROM nginx:alpine

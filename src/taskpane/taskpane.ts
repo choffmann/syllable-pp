@@ -27,7 +27,10 @@ Office.onReady(async (info) => {
   if (info.host === Office.HostType.PowerPoint) {
     document.getElementById("sideload-msg")!.style.display = "none";
     const version = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "develop";
-    document.getElementById("app-version")!.textContent = version;
+    const buildTime = typeof __BUILD_TIME__ !== "undefined" ? __BUILD_TIME__ : "";
+    document.getElementById("app-version")!.textContent = buildTime
+      ? `${version} (${buildTime})`
+      : version;
 
     setupLicenseListeners();
 
@@ -263,9 +266,7 @@ function handleSaveCorrection(): void {
   if (words.length === 1 && editedSyllables.length > 0) {
     const word = words[0];
     const originalSyllables =
-      currentWordSyllables.length > 0
-        ? currentWordSyllables[0].map((s) => s.text)
-        : [];
+      currentWordSyllables.length > 0 ? currentWordSyllables[0].map((s) => s.text) : [];
 
     const correction: SyllableCorrection = {
       originalWord: word,

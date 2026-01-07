@@ -11,20 +11,8 @@ body {
   flex-direction: column;
 }
 
-.header {
-  background-color: #0078d7;
-  color: white;
-  padding: 16px;
-  text-align: center;
-}
-
-.header h1 {
-  margin: 0;
-}
-
 .footer {
   text-align: center;
-  padding: 8px;
   margin-top: auto;
 }
 
