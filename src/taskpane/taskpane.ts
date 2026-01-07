@@ -1,12 +1,7 @@
 /* global document, Office, PowerPoint */
 
 import { Syllable, SyllableCorrection } from "../models/types";
-import {
-  initHyphenopoly,
-  hyphenateText,
-  flattenSyllables,
-  syllablesToText,
-} from "../services/hyphenation";
+import { initHyphenopoly, hyphenateText } from "../services/hyphenation";
 import { getSelectedText, applySyllableColors } from "../services/powerpoint";
 import {
   saveCorrection,
@@ -127,10 +122,9 @@ async function handleApply(): Promise<void> {
   try {
     showStatus("Wende Silbenfarben an...", "info");
 
-    const allSyllables = flattenSyllables(currentWordSyllables);
     const colors = getColors();
 
-    const success = await applySyllableColors(allSyllables, colors);
+    const success = await applySyllableColors(currentWordSyllables, colors);
 
     if (success) {
       showStatus("Silbenfarben erfolgreich angewendet!", "success");
@@ -177,12 +171,11 @@ function renderPreview(wordSyllables: Syllable[][], colors: string[]): void {
   const container = document.getElementById("preview-container")!;
   container.innerHTML = "";
 
-  let colorIndex = 0;
-
   for (const word of wordSyllables) {
     const wordSpan = document.createElement("span");
     wordSpan.className = "word-group";
 
+    let colorIndex = 0;
     for (const syllable of word) {
       const span = document.createElement("span");
       span.className = "syllable-preview";

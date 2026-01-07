@@ -26,7 +26,7 @@ export async function getSelectedText(): Promise<TextSelection | null> {
 }
 
 export async function applySyllableColors(
-  syllables: Syllable[],
+  wordSyllables: Syllable[][],
   colors: string[]
 ): Promise<boolean> {
   return new Promise((resolve) => {
@@ -36,22 +36,25 @@ export async function applySyllableColors(
         textRange.load("text");
         await context.sync();
 
-        const newText = syllables.map((s) => s.text).join("");
+        const newText = wordSyllables.flat().map((s) => s.text).join("");
         textRange.text = newText;
         await context.sync();
 
         let position = 0;
-        for (let i = 0; i < syllables.length; i++) {
-          const syllable = syllables[i];
-          if (/^\s+$/.test(syllable.text)) {
-            position += syllable.text.length;
-            continue;
-          }
+        for (const word of wordSyllables) {
+          let colorIndex = 0;
+          for (const syllable of word) {
+            if (/^\s+$/.test(syllable.text)) {
+              position += syllable.text.length;
+              continue;
+            }
 
-          const color = colors[i % colors.length];
-          const subRange = textRange.getSubstring(position, syllable.text.length);
-          subRange.font.color = color;
-          position += syllable.text.length;
+            const color = colors[colorIndex % colors.length];
+            const subRange = textRange.getSubstring(position, syllable.text.length);
+            subRange.font.color = color;
+            position += syllable.text.length;
+            colorIndex++;
+          }
         }
 
         await context.sync();
