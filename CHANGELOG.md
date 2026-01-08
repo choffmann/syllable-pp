@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/choffmann/syllable-pp/compare/v0.1.0...v0.1.1) (2026-01-08)
+
+
+### Bug Fixes
+
+* simplify installer and fix release workflow ([96071ed](https://github.com/choffmann/syllable-pp/commit/96071ed5ffb5c12148e10d5dab6a9327f7cc3692))
+
 ## [0.1.0](https://github.com/choffmann/syllable-pp/compare/v0.1.0...v0.1.0) (2026-01-07)
 
 
