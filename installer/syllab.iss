@@ -3,7 +3,7 @@
 ; Build with: ISCC syllab.iss
 
 #define MyAppName "Syllab"
-#define MyAppVersion "0.1.0" ; x-release-please-version
+#define MyAppVersion "0.1.1" ; x-release-please-version
 #define MyAppPublisher "Cedrik Hoffmann"
 #define MyAppURL "https://github.com/choffmann/syllable-pp"
 #define MyAppGUID "{{01C71763-4C08-4195-9581-18C398267EF1}"
